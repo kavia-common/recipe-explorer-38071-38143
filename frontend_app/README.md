@@ -34,6 +34,10 @@ If your CI is extremely memory constrained, you can use:
 
 Same as above but enforces the Node memory cap more strictly by invoking `node --max-old-space-size=256`.
 
+### `npm run start:ultralowmem`
+
+For extremely constrained CI (to avoid OOM/Exit 137), this sets an even lower memory cap and disables source maps and websocket port negotiation aggressively.
+
 ### `npm test`
 
 Runs tests once in CI mode.

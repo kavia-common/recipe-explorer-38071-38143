@@ -25,8 +25,9 @@ export default function SignIn() {
       }
       return link;
     };
-    const commonLink = ensureLink(commonHref);
-    const screenLink = ensureLink(screenHref);
+    // Ensure styles are present (links are intentionally not referenced later to avoid ESLint unused warnings)
+    ensureLink(commonHref);
+    ensureLink(screenHref);
 
     // Minimal interaction from assets/sign-in-11-235.js
     const btn = document.getElementById('big-button-54-668');

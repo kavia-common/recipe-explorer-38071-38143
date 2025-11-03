@@ -11,6 +11,7 @@
     "start": "HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=${REACT_APP_ENABLE_SOURCE_MAPS:-false} react-scripts start",
     "start:ci": "CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 react-scripts start --max_old_space_size=256",
     "start:lowmem": "CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 node --max-old-space-size=256 node_modules/react-scripts/bin/react-scripts.js start",
+    "start:ultralowmem": "CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=192 node --max-old-space-size=192 node_modules/react-scripts/bin/react-scripts.js start",
     "build": "GENERATE_SOURCEMAP=${REACT_APP_ENABLE_SOURCE_MAPS:-false} react-scripts build",
     "test": "CI=true react-scripts test --watchAll=false --passWithNoTests",
     "eject": "react-scripts eject",
