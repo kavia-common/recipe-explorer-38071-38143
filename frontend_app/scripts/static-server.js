@@ -15,8 +15,8 @@ const express = require('express');
 
 function main() {
   const app = express();
-  // Prefer REACT_APP_PORT to mirror CRA expectations; fallback to PORT then 3000
-  const port = process.env.REACT_APP_PORT || process.env.PORT || 3000;
+  // Prefer numeric PORT values and consistent precedence
+  const port = Number(process.env.REACT_APP_PORT || process.env.PORT || 3000);
   const host = process.env.HOST || '0.0.0.0';
 
   // Serve static files from public/
@@ -24,8 +24,10 @@ function main() {
 
   // Health endpoint (zero-bundle)
   app.get('/healthz.html', (req, res) => {
-    res.setHeader('Cache-Control', 'no-store');
-    res.send('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>OK</title></head><body>OK</body></html>');
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.type('html').send('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>OK</title></head><body>OK</body></html>');
   });
 
   app.listen(port, host, () => {
