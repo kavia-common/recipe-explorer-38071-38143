@@ -44,8 +44,8 @@ fi
 cp -r ../assets/* public/assets/ 2>/dev/null || true
 
 echo "[ci-start] Starting dev server on ${HOST}:${PORT} with NODE_OPTIONS=${NODE_OPTIONS}"
-# Start server in background and wait for health
-( npx react-scripts start & ) >/dev/null 2>&1 &
+# Start server in background and wait for health using local react-scripts binary (avoid npx overhead)
+( node node_modules/react-scripts/bin/react-scripts.js start & ) >/dev/null 2>&1 &
 SERVER_PID=$!
 echo "[ci-start] react-scripts started with PID ${SERVER_PID}"
 

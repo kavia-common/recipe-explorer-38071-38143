@@ -10,5 +10,6 @@ Frontend (React) quickstart in CI/containers:
 If you experience exit code 137 (OOM), try:
 - npm run start:lowmem
 - npm run start:ultralowmem
+- Or run ultra + wait together: `npm run ci:dev`
 
 Environment sample: see frontend_app/.env.example
