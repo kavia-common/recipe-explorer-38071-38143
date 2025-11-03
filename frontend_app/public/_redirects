@@ -1,0 +1,3 @@
+# PUBLIC_INTERFACE
+# SPA fallback for static hosting (no effect in CRA dev server; safe to include)
+# /*    /index.html   200

@@ -34,7 +34,9 @@ This endpoint is served statically from public/healthz.html so it returns even i
 
 If your CI is extremely memory constrained (exit code 137/SIGKILL), you can avoid starting the JS bundle entirely and still pass health checks by running:
 - `CI_STATIC_ONLY=1 npm run ci:start`
-This serves only the public/ folder (including healthz.html) with minimal memory footprint.
+or
+- `npm run ci:dev:static`
+Both serve only the public/ folder (including healthz.html) with minimal memory footprint.
 
 If running in CI or low-memory environments, prefer:
 
