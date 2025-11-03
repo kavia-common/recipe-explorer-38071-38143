@@ -12,6 +12,7 @@ set -euo pipefail
 #     npm run start:lowmem
 #   or:
 #     npm run start:ultralowmem
+# - See .env.example for recommended env vars.
 
 export CI=true
 export HOST=0.0.0.0

@@ -23,14 +23,14 @@ Then:
 
 ### `npm start`
 
-Runs the app in development mode.\
+Alias to start with CI-friendly low-memory defaults.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 If running in CI or low-memory environments, prefer:
 
 ### `npm run start:safe`
 
-Alias for `start:ci` with CI-friendly defaults:
+CI-friendly defaults:
 - Disables source maps (`GENERATE_SOURCEMAP=false`) to reduce memory usage
 - Avoids opening a browser (`BROWSER=none`)
 - Binds to `0.0.0.0` for container access
@@ -78,10 +78,17 @@ Key ones for stability:
 ## CI Stability Tips (Exit 137/OOM)
 
 If your CI runner kills the dev server with exit code 137:
-- Prefer `npm run start:ci` or `npm run start:lowmem` which cap Node memory and disable source maps.
+- Use `npm start` or `npm run start:safe` which cap Node memory and disable source maps.
 - Ensure `REACT_APP_ENABLE_SOURCE_MAPS=false` in your env (or `.env`).
 - Keep `BROWSER=none`, `CHOKIDAR_USEPOLLING=false`, and `WDS_SOCKET_PORT=0` to minimize overhead and avoid websocket port issues in containers.
 - You may also export `NODE_OPTIONS=--max-old-space-size=256` explicitly in your CI job.
+
+## Healthcheck
+
+You can verify the server is up (from the same container) with:
+```
+npm run healthcheck
+```
 
 ## Customization
 
