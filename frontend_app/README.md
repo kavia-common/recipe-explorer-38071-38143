@@ -28,13 +28,13 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 If running in CI or low-memory environments, prefer:
 
-### `npm run start:ci`
+### `npm run start:safe`
 
-Starts the dev server with CI-friendly defaults:
+Alias for `start:ci` with CI-friendly defaults:
 - Disables source maps (`GENERATE_SOURCEMAP=false`) to reduce memory usage
 - Avoids opening a browser (`BROWSER=none`)
 - Binds to `0.0.0.0` for container access
-- Sets a conservative memory cap for Node via `--max_old_space_size=256`
+- Sets a conservative memory cap for Node via `--max-old-space-size=256`
 - Uses `WDS_SOCKET_PORT=0` to avoid websocket port negotiation issues in containers
 
 If your CI is extremely memory constrained, you can use:
