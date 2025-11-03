@@ -16,7 +16,7 @@ set -euo pipefail
 
 export CI=true
 export HOST=0.0.0.0
-export PORT="${REACT_APP_PORT:-3000}"
+export PORT="${REACT_APP_PORT:-${PORT:-3000}}"
 export CHOKIDAR_USEPOLLING=false
 export BROWSER=none
 export WDS_SOCKET_PORT=0
@@ -31,16 +31,25 @@ else
   exit 1
 fi
 
-# Copy public assets after install (idempotent)
+# Ensure public dir and healthz exist (zero-bundle health)
 mkdir -p public/assets || true
+if [ ! -f "public/healthz.html" ]; then
+  cat > public/healthz.html <<'EOF'
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>OK</title></head><body>OK</body></html>
+EOF
+fi
+
+# Copy public assets after install (idempotent)
 cp -r ../assets/* public/assets/ 2>/dev/null || true
 
 echo "[ci-start] Starting dev server on ${HOST}:${PORT} with NODE_OPTIONS=${NODE_OPTIONS}"
 # Start server in background and wait for health
 ( npx react-scripts start & ) >/dev/null 2>&1 &
 SERVER_PID=$!
+echo "[ci-start] react-scripts started with PID ${SERVER_PID}"
 
-# Ensure wait-on is available (install locally if not present)
+# Ensure wait-on is available (installed as devDependency too)
 if ! npx --yes wait-on --help >/dev/null 2>&1; then
   echo "[ci-start] Installing wait-on for readiness checks..."
   npm install --no-audit --no-fund --silent wait-on || true
@@ -48,7 +57,9 @@ fi
 
 # Wait for health endpoint to be ready (served from public/healthz.html zero-bundle)
 echo "[ci-start] Waiting for health endpoint..."
-npx --yes wait-on "http://127.0.0.1:${PORT}/healthz.html" --timeout 60000 || true
+if ! npx --yes wait-on "http://127.0.0.1:${PORT}/healthz.html" --timeout 90000; then
+  echo "[ci-start] WARNING: Health endpoint did not become ready within timeout." >&2
+fi
 
 # Print a simple ready line; keep the background server running for CI to detect port
 echo "[ci-start] READY - Dev server is up at http://127.0.0.1:${PORT}"

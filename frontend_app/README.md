@@ -86,6 +86,8 @@ If your CI runner kills the dev server with exit code 137:
 - Keep `BROWSER=none`, `CHOKIDAR_USEPOLLING=false`, and `WDS_SOCKET_PORT=0` to minimize overhead and avoid websocket port issues in containers.
 - Export `NODE_OPTIONS=--max-old-space-size=256` explicitly in your CI job if needed.
 - Use the `healthcheck:wait` script to block until the server serves `/healthz.html`.
+- Alternatively, to both start and hold the process open for CI, run:
+  - `npm run ci:start`
 
 ## Healthcheck
 
