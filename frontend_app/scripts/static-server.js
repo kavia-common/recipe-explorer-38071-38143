@@ -22,13 +22,19 @@ function main() {
   // Serve static files from public/
   app.use(express.static('public'));
 
-  // Health endpoint (zero-bundle)
-  app.get('/healthz.html', (req, res) => {
+  // Health endpoints (zero-bundle)
+  const sendHealth = (res, isHtml = false) => {
     res.setHeader('Cache-Control', 'no-store, max-age=0');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    res.type('html').send('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>OK</title></head><body>OK</body></html>');
-  });
+    if (isHtml) {
+      res.type('html').send('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>OK</title></head><body>OK</body></html>');
+    } else {
+      res.type('text').send('OK');
+    }
+  };
+  app.get('/healthz.html', (req, res) => sendHealth(res, true));
+  app.get('/healthz', (req, res) => sendHealth(res, false));
 
   app.listen(port, host, () => {
     // eslint-disable-next-line no-console

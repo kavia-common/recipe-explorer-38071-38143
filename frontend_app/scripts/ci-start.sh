@@ -33,13 +33,17 @@ else
   exit 1
 fi
 
-# Ensure public dir and healthz exist (zero-bundle health)
+# Ensure public dir and health endpoints exist (zero-bundle health)
 mkdir -p public/assets || true
 if [ ! -f "public/healthz.html" ]; then
   cat > public/healthz.html <<'EOF'
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><title>OK</title></head><body>OK</body></html>
 EOF
+fi
+# Provide /healthz (no extension) to match environments expecting that path
+if [ ! -f "public/healthz" ]; then
+  printf "OK" > public/healthz
 fi
 
 # Copy public assets after install (idempotent)
