@@ -11,7 +11,8 @@ This project provides a minimal React template with a clean, modern UI and minim
 
 ## Getting Started
 
-First, install dependencies (required in CI as well):
+First, copy safe environment defaults (prevents exit code 137/OOM) and then install dependencies:
+- cp .env.example .env
 - npm ci
   or
 - npm install

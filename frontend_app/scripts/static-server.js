@@ -58,7 +58,15 @@ function main() {
 
   // Default route to index.html so that root path responds even without CRA
   app.get('/', (req, res) => {
-    res.sendFile(path.join(publicDir, 'index.html'));
+    const indexPath = path.join(publicDir, 'index.html');
+    try {
+      res.sendFile(indexPath);
+    } catch (e) {
+      // Fallback inline HTML if file missing for any reason
+      res
+        .type('html')
+        .send('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Recipe Explorer</title></head><body><div id="root">OK</div></body></html>');
+    }
   });
 
   const server = app.listen(port, host, () => {

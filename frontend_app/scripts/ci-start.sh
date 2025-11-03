@@ -45,6 +45,16 @@ fi
 if [ ! -f "public/healthz" ]; then
   printf "OK" > public/healthz
 fi
+# Provide JSON health variant
+if [ ! -f "public/health.json" ]; then
+  printf '{"status":"ok"}' > public/health.json
+fi
+# Ensure CRA mount page exists so / responds even before bundling
+if [ ! -f "public/index.html" ]; then
+  cat > public/index.html <<'EOF'
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta http-equiv="Cache-Control" content="no-store, max-age=0"/><title>Recipe Explorer</title></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+EOF
+fi
 
 # Copy public assets after install (idempotent)
 cp -r ../assets/* public/assets/ 2>/dev/null || true
