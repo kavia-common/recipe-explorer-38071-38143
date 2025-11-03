@@ -92,6 +92,8 @@ See `.env.example` for variables you can configure (port, flags, URLs). Key ones
 - `BROWSER=none`
 - `WDS_SOCKET_PORT=0`
 
+A ready-to-use `.env.example` is included to avoid OOM on CI.
+
 ## CI Stability Tips (Exit 137/OOM)
 
 If your CI runner kills the dev server with exit code 137:
@@ -101,7 +103,8 @@ If your CI runner kills the dev server with exit code 137:
 - Export `NODE_OPTIONS=--max-old-space-size=256` explicitly in your CI job if needed.
 - Use the `healthcheck:wait` script to block until the server serves `/healthz.html`.
 - Alternatively, to both start and hold the process open for CI, run:
-  - `npm run ci:start`
+  - `npm run ci:start` (falls back to static server automatically if dev server exits)
+  - Set `CI_STATIC_ONLY=1` to serve static-only in ultra-tight memory
 
 ## Healthcheck
 

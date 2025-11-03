@@ -75,7 +75,8 @@ if [ "${MODE}" = "static" ]; then
   echo "[ci-start] static server started with PID ${SERVER_PID}"
 elif [ "${MODE}" = "ultralowmem" ]; then
   # For ultralowmem, try dev server with even tighter memory; fallback to static if it exits too soon
-  NODE_OPTIONS="--max-old-space-size=192" SERVER_PID="$(start_react)"
+  export NODE_OPTIONS="--max-old-space-size=192"
+  SERVER_PID="$(start_react)"
   echo "[ci-start] react-scripts (ultralowmem) started with PID ${SERVER_PID}"
 else
   SERVER_PID="$(start_react)"
@@ -105,14 +106,18 @@ graceful_exit() {
   # Try to stop only the started child, avoid killing entire process group
   if kill -0 "${SERVER_PID}" >/dev/null 2>&1; then
     kill "${SERVER_PID}" >/dev/null 2>&1 || true
-    # Wait briefly for clean shutdown
-    timeout 5s wait "${SERVER_PID}" >/dev/null 2>&1 || true
+    # Portable small wait loop instead of `timeout`
+    SECS=0
+    while kill -0 "${SERVER_PID}" >/dev/null 2>&1 && [ $SECS -lt 5 ]; do
+      sleep 1
+      SECS=$((SECS+1))
+    done
   fi
   exit 0
 }
 trap graceful_exit TERM INT
 
-# Keep-alive loop that checks the child is alive
+# Keep-alive loop that checks the child is alive; react-scripts can be heavy in CI
 while true; do
   if ! kill -0 "${SERVER_PID}" >/dev/null 2>&1; then
     # Child exited unexpectedly; if running in dev/ultralowmem, fallback to static to keep CI healthy
@@ -121,10 +126,8 @@ while true; do
       SERVER_PID="$(start_static)"
       MODE="static"
       echo "[ci-start] static server started with PID ${SERVER_PID}"
-      # Continue loop to monitor static server
       continue
     else
-      # Static server died; exit
       break
     fi
   fi
