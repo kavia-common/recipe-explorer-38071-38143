@@ -12,6 +12,7 @@
  *   - HOST: host to bind to (default 0.0.0.0)
  */
 const express = require('express');
+const path = require('path');
 
 function main() {
   const app = express();
@@ -19,9 +20,10 @@ function main() {
   const parsePort = (v) => {
     const n = Number(v);
     return Number.isFinite(n) && n > 0 ? n : 3000;
-    };
+  };
   const port = parsePort(process.env.REACT_APP_PORT || process.env.PORT || 3000);
   const host = process.env.HOST || '0.0.0.0';
+  const publicDir = path.resolve('public');
 
   // Global no-cache headers for stability
   app.use((req, res, next) => {
@@ -32,7 +34,7 @@ function main() {
   });
 
   // Serve static files from public/
-  app.use(express.static('public', { etag: false, lastModified: false }));
+  app.use(express.static(publicDir, { etag: false, lastModified: false }));
 
   // Health endpoints (zero-bundle)
   const sendHealth = (res, isHtml = false) => {
@@ -47,6 +49,11 @@ function main() {
   };
   app.get('/healthz.html', (req, res) => sendHealth(res, true));
   app.get('/healthz', (req, res) => sendHealth(res, false));
+
+  // Default route to index.html so that root path responds even without CRA
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(publicDir, 'index.html'));
+  });
 
   const server = app.listen(port, host, () => {
     // eslint-disable-next-line no-console

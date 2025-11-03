@@ -14,7 +14,7 @@ const path = require('path');
 function ensureDir(p) {
   try {
     fs.mkdirSync(p, { recursive: true });
-  } catch (e) {
+  } catch {
     // noop for idempotency
   }
 }
@@ -25,11 +25,15 @@ function ensureFile(p, content) {
       ensureDir(path.dirname(p));
       fs.writeFileSync(p, content);
     }
-  } catch (e) {
+  } catch {
     // Intentionally silent to avoid failing CI on FS quirks
   }
 }
 
+/**
+ * Perform a shallow copy of files from src to dst, only first-level files and
+ * creates first-level directories. Avoids deep traversal to reduce memory.
+ */
 function shallowCopy(src, dst) {
   try {
     if (!fs.existsSync(src)) return;
@@ -41,22 +45,31 @@ function shallowCopy(src, dst) {
       if (e.isDirectory()) {
         // create dir only; avoid deep traversal to keep memory low
         ensureDir(d);
-        // copy only first-level files
-        const sub = fs.readdirSync(s, { withFileTypes: true }).filter(se => se.isFile());
+        // copy only first-level files inside this subdir
+        let sub = [];
+        try {
+          sub = fs.readdirSync(s, { withFileTypes: true }).filter(se => se.isFile());
+        } catch {
+          sub = [];
+        }
         for (const se of sub) {
           const ss = path.join(s, se.name);
           const dd = path.join(d, se.name);
           try {
             fs.copyFileSync(ss, dd);
-          } catch { /* ignore */ }
+          } catch {
+            // ignore individual copy errors
+          }
         }
-      } else {
+      } else if (e.isFile()) {
         try {
           fs.copyFileSync(s, d);
-        } catch { /* ignore */ }
+        } catch {
+          // ignore individual copy errors
+        }
       }
     }
-  } catch (e) {
+  } catch {
     // ignore errors to prevent startup fail
   }
 }
@@ -69,7 +82,7 @@ function shallowCopy(src, dst) {
   // Copy ../assets -> public/assets if available (shallow)
   shallowCopy(path.resolve('..', 'assets'), assetsDst);
 
-  // Health page (zero-bundle)
+  // Health page (zero-bundle), guaranteed to exist for readiness checks
   ensureFile(
     path.join(publicDir, 'healthz.html'),
     '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>OK</title></head><body>OK</body></html>'
