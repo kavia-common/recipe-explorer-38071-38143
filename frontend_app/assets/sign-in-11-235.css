@@ -1,0 +1,4 @@
+/* Screen-specific CSS for Sign In 11-235 */
+#screen-sign-in-11-235 { background: var(--style-10-background-color); }
+button#big-button-54-668 { cursor: pointer; }
+button#big-button-54-668:active { transform: translateY(1px); }
