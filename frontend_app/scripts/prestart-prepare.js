@@ -46,21 +46,15 @@ function shallowCopy(src, dst) {
         // create dir only; avoid deep traversal to keep memory low
         ensureDir(d);
         // copy only first-level files inside this subdir
-        let sub = [];
         try {
-          sub = fs.readdirSync(s, { withFileTypes: true }).filter(se => se.isFile());
-        } catch {
-          sub = [];
-        }
-        for (const se of sub) {
-          const ss = path.join(s, se.name);
-          const dd = path.join(d, se.name);
-          try {
-            fs.copyFileSync(ss, dd);
-          } catch {
-            // ignore individual copy errors
+          const sub = fs.readdirSync(s, { withFileTypes: true });
+          for (const se of sub) {
+            if (!se.isFile()) continue;
+            const ss = path.join(s, se.name);
+            const dd = path.join(d, se.name);
+            try { fs.copyFileSync(ss, dd); } catch { /* ignore */ }
           }
-        }
+        } catch { /* ignore */ }
       } else if (e.isFile()) {
         try {
           fs.copyFileSync(s, d);

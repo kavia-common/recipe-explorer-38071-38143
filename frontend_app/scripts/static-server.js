@@ -25,16 +25,8 @@ function main() {
   const host = process.env.HOST || '0.0.0.0';
   const publicDir = path.resolve('public');
 
-  // Global no-cache headers for stability
-  app.use((req, res, next) => {
-    res.setHeader('Cache-Control', 'no-store, max-age=0');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-    next();
-  });
-
-  // Serve static files from public/
-  app.use(express.static(publicDir, { etag: false, lastModified: false }));
+  // Serve static files from public/ with minimal overhead
+  app.use(express.static(publicDir, { etag: false, lastModified: false, cacheControl: false, redirect: true }));
 
   // Health endpoints (zero-bundle)
   const sendHealth = (res, isHtml = false) => {
