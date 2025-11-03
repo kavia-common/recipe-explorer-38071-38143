@@ -5,6 +5,7 @@ set -euo pipefail
 # ci-start.sh installs dependencies and starts the dev server with CI-friendly,
 # low-memory defaults to avoid OOM (exit 137) in constrained environments.
 # Usage: ./scripts/ci-start.sh
+# Honors CI_STATIC_ONLY=1 to serve static health only (zero-bundle) to minimize memory.
 
 export CI=true
 export HOST="${HOST:-0.0.0.0}"
@@ -13,13 +14,16 @@ export PORT="${REACT_APP_PORT:-${PORT:-3000}}"
 export CHOKIDAR_USEPOLLING="${CHOKIDAR_USEPOLLING:-false}"
 export BROWSER="${BROWSER:-none}"
 export WDS_SOCKET_PORT="${WDS_SOCKET_PORT:-0}"
+
+# Keep memory low; allow override via env
+export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=256}"
+
 # Respect REACT_APP_ENABLE_SOURCE_MAPS if provided, default false
 if [ "${REACT_APP_ENABLE_SOURCE_MAPS:-false}" = "true" ]; then
   export GENERATE_SOURCEMAP=true
 else
   export GENERATE_SOURCEMAP=false
 fi
-export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=256}"
 
 echo "[ci-start] Installing dependencies..."
 if command -v npm >/dev/null 2>&1; then
@@ -41,14 +45,21 @@ fi
 # Copy public assets after install (idempotent)
 cp -r ../assets/* public/assets/ 2>/dev/null || true
 
-echo "[ci-start] Starting server on ${HOST}:${PORT} with NODE_OPTIONS=${NODE_OPTIONS}"
-# If CI_STATIC_ONLY=1, serve only public assets to minimize memory (zero-bundle)
+# Auto-switch to static-only if explicitly requested
+MODE="dev"
 if [ "${CI_STATIC_ONLY:-0}" = "1" ]; then
+  MODE="static"
+fi
+
+echo "[ci-start] Starting server on ${HOST}:${PORT} (mode=${MODE}) with NODE_OPTIONS=${NODE_OPTIONS}"
+
+if [ "${MODE}" = "static" ]; then
+  # Minimal static server, keep process in foreground via tail later
   ( node ./scripts/static-server.js & ) >/dev/null 2>&1 &
   SERVER_PID=$!
   echo "[ci-start] static server started with PID ${SERVER_PID}"
 else
-  # Start React dev server in background and wait for health using local react-scripts binary (avoid npx overhead)
+  # Start React dev server with low memory; keep backgrounded and prevent shell from sending SIGINT to whole group
   ( node node_modules/react-scripts/bin/react-scripts.js start & ) >/dev/null 2>&1 &
   SERVER_PID=$!
   echo "[ci-start] react-scripts started with PID ${SERVER_PID}"
@@ -70,5 +81,14 @@ fi
 # Print a simple ready line; keep the background server running for CI to detect port
 echo "[ci-start] READY - Dev server is up at http://127.0.0.1:${PORT}"
 echo "[ci-start] Health: http://127.0.0.1:${PORT}${HEALTH_PATH}"
-# Prevent script exit which would kill background job in some CI; tail to keep process alive
-tail -f /dev/null
+
+# Prevent script exit which would kill background jobs in some CI; keep alive without killing process group on SIGINT
+# Use trap to cleanly exit without kill -9
+trap 'echo "[ci-start] Caught SIGTERM/SIGINT, exiting without force-kill"; exit 0' TERM INT
+# Keep-alive loop that checks child is alive; avoids tail -f zombies and responds to signals
+while kill -0 "${SERVER_PID}" >/dev/null 2>&1; do
+  sleep 5
+done
+
+# If we reach here, the child exited; exit with child's code if available
+wait "${SERVER_PID}" || true

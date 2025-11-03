@@ -41,7 +41,7 @@ Both serve only the public/ folder (including healthz.html) with minimal memory 
 Alternatively:
 - `npm run start:static` will serve only the static public directory locally without the React dev server.
 - For CI that previously exited with code 137, prefer:
-  - `npm run ci:dev` (ultralowmem + wait)
+  - `npm run ci:dev` (ultralowmem + wait). You can force static-only with `CI_STATIC_ONLY=1 npm run ci:dev`.
   - `npm run ci:dev:static` (static-only + wait; zero-bundle)
   - Ensure `.env` includes `NODE_OPTIONS=--max-old-space-size=256` and `REACT_APP_ENABLE_SOURCE_MAPS=false`.
 
