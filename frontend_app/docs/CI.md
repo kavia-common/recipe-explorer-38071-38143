@@ -10,6 +10,7 @@ Key recommendations:
 
 Zero-bundle health endpoint:
 - http://localhost:3000/healthz.html, served from public/healthz.html
+- http://localhost:3000/healthz (plain text), served from public/healthz
 - Programmatic wait: npm run ci:health
 
 Static-only startup (ultra-low memory):

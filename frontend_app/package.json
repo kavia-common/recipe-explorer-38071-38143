@@ -16,7 +16,7 @@
     "start:ci": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none WDS_SOCKET_PORT=0 GENERATE_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=256 node node_modules/react-scripts/bin/react-scripts.js start",
     "start:safe": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none WDS_SOCKET_PORT=0 GENERATE_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=256 node node_modules/react-scripts/bin/react-scripts.js start",
     "start:lowmem": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none WDS_SOCKET_PORT=0 GENERATE_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=256 node node_modules/react-scripts/bin/react-scripts.js start",
-    "start:ultralowmem": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none WDS_SOCKET_PORT=0 GENERATESOURCEMAP=false NODE_OPTIONS=--max-old-space-size=192 node node_modules/react-scripts/bin/react-scripts.js start",
+    "start:ultralowmem": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none WDS_SOCKET_PORT=0 GENERATE_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=192 node node_modules/react-scripts/bin/react-scripts.js start",
     "start:memcap": "cross-env CI=true NODE_OPTIONS=--max-old-space-size=256 npm run start:safe",
     "start:serve-static": "node ./scripts/static-server.js",
     "start:static": "npm run start:serve-static",
