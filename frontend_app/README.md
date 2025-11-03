@@ -89,6 +89,8 @@ You can verify the server is up (from the same container) with:
 ```
 npm run healthcheck
 ```
+Or access the lightweight health page:
+- http://localhost:3000/healthz.html
 
 ## Customization
 
