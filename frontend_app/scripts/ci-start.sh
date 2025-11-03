@@ -25,12 +25,16 @@ else
   export GENERATE_SOURCEMAP=false
 fi
 
-echo "[ci-start] Installing dependencies..."
-if command -v npm >/dev/null 2>&1; then
-  npm ci --silent || npm install --no-audit --no-fund --silent
-else
+echo "[ci-start] Ensuring dependencies (skip reinstall if already present)..."
+if ! command -v npm >/dev/null 2>&1; then
   echo "[ci-start] ERROR: npm not found" >&2
   exit 1
+fi
+# Only run install if node_modules is missing to reduce memory usage in CI
+if [ ! -d "node_modules" ]; then
+  npm ci --silent || npm install --no-audit --no-fund --silent
+else
+  echo "[ci-start] node_modules present; skipping install"
 fi
 
 # Ensure public dir and health endpoints exist (zero-bundle health)

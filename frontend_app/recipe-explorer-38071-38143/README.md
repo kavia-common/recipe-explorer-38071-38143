@@ -2,13 +2,14 @@
 
 Frontend (React) quickstart in CI/containers:
 - cd frontend_app
+- cp .env.example .env   # IMPORTANT: loads safe CI defaults to prevent exit code 137/OOM
 - npm ci
 - npm run start:safe
 - Healthcheck (zero-bundle): http://localhost:3000/healthz.html
 - Programmatic wait: npm run ci:health
 
 CI Low-memory tips:
-- Copy frontend_app/.env.example to frontend_app/.env before starting to inherit safe CI defaults (prevents exit code 137/OOM).
+- Copy frontend_app/.env.example to frontend_app/.env before starting to inherit safe CI defaults.
 - Use npm run start:safe (default) or npm run start:ultralowmem for very tight memory.
 - Ensure NODE_OPTIONS=--max-old-space-size=256 and REACT_APP_ENABLE_SOURCE_MAPS=false.
 - Health endpoint is static and should return even before bundle compiles.

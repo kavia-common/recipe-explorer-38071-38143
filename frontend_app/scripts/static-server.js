@@ -41,6 +41,7 @@ function main() {
   };
   app.get('/healthz.html', (req, res) => sendHealth(res, true));
   app.get('/healthz', (req, res) => sendHealth(res, false));
+  app.get('/health', (req, res) => sendHealth(res, false));
   app.get('/health.json', (req, res) => {
     res.setHeader('Cache-Control', 'no-store, max-age=0');
     res.setHeader('Pragma', 'no-cache');
