@@ -43,11 +43,18 @@ fi
 # Copy public assets after install (idempotent)
 cp -r ../assets/* public/assets/ 2>/dev/null || true
 
-echo "[ci-start] Starting dev server on ${HOST}:${PORT} with NODE_OPTIONS=${NODE_OPTIONS}"
-# Start server in background and wait for health using local react-scripts binary (avoid npx overhead)
-( node node_modules/react-scripts/bin/react-scripts.js start & ) >/dev/null 2>&1 &
-SERVER_PID=$!
-echo "[ci-start] react-scripts started with PID ${SERVER_PID}"
+echo "[ci-start] Starting server on ${HOST}:${PORT} with NODE_OPTIONS=${NODE_OPTIONS}"
+# If CI_STATIC_ONLY=1, serve only public assets to minimize memory (zero-bundle)
+if [ "${CI_STATIC_ONLY:-0}" = "1" ]; then
+  ( node -e "const express=require('express');const app=express();const port=process.env.REACT_APP_PORT||process.env.PORT||3000;app.use(express.static('public'));app.get('/healthz.html',(req,res)=>res.send('<!DOCTYPE html><html><head><meta charset=\\'UTF-8\\'><title>OK</title></head><body>OK</body></html>'));app.listen(port,'0.0.0.0',()=>console.log('Static server at http://0.0.0.0:'+port));" & ) >/dev/null 2>&1 &
+  SERVER_PID=$!
+  echo "[ci-start] static server started with PID ${SERVER_PID}"
+else
+  # Start React dev server in background and wait for health using local react-scripts binary (avoid npx overhead)
+  ( node node_modules/react-scripts/bin/react-scripts.js start & ) >/dev/null 2>&1 &
+  SERVER_PID=$!
+  echo "[ci-start] react-scripts started with PID ${SERVER_PID}"
+fi
 
 # Ensure wait-on is available (installed as devDependency too)
 if ! npx --yes wait-on --help >/dev/null 2>&1; then
