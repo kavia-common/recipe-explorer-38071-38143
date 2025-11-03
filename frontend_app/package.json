@@ -21,7 +21,7 @@
     "browserslist:update": "npx --yes update-browserslist-db@latest || true",
     "ci:start": "bash ./scripts/ci-start.sh",
     "ci:start:ultra": "cross-env CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=192 node node_modules/react-scripts/bin/react-scripts.js start",
-    "postinstall": "mkdir -p public/assets && cp -r ../assets/* public/assets/ 2>/dev/null || true"
+    "postinstall": "mkdir -p public/assets && cp -r ../assets/* public/assets/ 2>/dev/null || true && echo \"postinstall: assets copied\" >/dev/null"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -46,7 +46,7 @@ if ! npx --yes wait-on --help >/dev/null 2>&1; then
   npm install --no-audit --no-fund --silent wait-on || true
 fi
 
-# Wait for health endpoint to be ready
+# Wait for health endpoint to be ready (served from public/healthz.html zero-bundle)
 echo "[ci-start] Waiting for health endpoint..."
 npx --yes wait-on "http://127.0.0.1:${PORT}/healthz.html" --timeout 60000 || true
 
