@@ -27,6 +27,7 @@ Starts the dev server with CI-friendly defaults:
 - Avoids opening a browser (`BROWSER=none`)
 - Binds to `0.0.0.0` for container access
 - Sets a conservative memory cap for Node via `--max_old_space_size=256`
+- Uses `WDS_SOCKET_PORT=0` to avoid websocket port negotiation issues in containers
 
 If your CI is extremely memory constrained, you can use:
 
@@ -54,6 +55,8 @@ If you see a notice that the Browserslist database is out of date, you can updat
 ```
 npm run browserslist:update
 ```
+
+You can also read docs/browserslist.md for more info.
 
 ## Environment Variables
 

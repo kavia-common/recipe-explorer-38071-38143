@@ -1,19 +1,15 @@
 import React, { useEffect } from 'react';
 import '../App.css';
-// Import CSS assets from root-level assets via public path in CRA by inserting link tags dynamically
-// We keep the assets in root-level /assets/ and reference them by absolute path as instructed.
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * Render a pixel-accurate Sign In screen adapted from assets/sign-in-11-235.html.
+ * Loads shared and screen-specific CSS from /assets and binds minimal interactions
+ * equivalent to assets/sign-in-11-235.js (console log on Sign In click/enter/space).
+ */
 export default function SignIn() {
-  /**
-   * Render a pixel-accurate Sign In screen adapted from assets/sign-in-11-235.html.
-   * Loads shared and screen-specific CSS from /assets and binds minimal interactions
-   * equivalent to assets/sign-in-11-235.js (console log on Sign In click/enter/space).
-   */
   useEffect(() => {
-    // Inject common.css and screen CSS from root-level /assets so we don't move assets
-    const commonHref = '/assets/common.css';
-    const screenHref = '/assets/sign-in-11-235.css';
+    // Helper to inject stylesheet link if not already present
     const ensureLink = (href) => {
       let link = document.querySelector(`link[data-dynamic-style="${href}"]`);
       if (!link) {
@@ -23,40 +19,36 @@ export default function SignIn() {
         link.href = href;
         document.head.appendChild(link);
       }
-      return link;
     };
-    // Ensure styles are present (links are intentionally not referenced later to avoid ESLint unused warnings)
-    ensureLink(commonHref);
-    ensureLink(screenHref);
+
+    // Inject common and screen styles (kept persistent; no cleanup to avoid flicker)
+    ensureLink('/assets/common.css');
+    ensureLink('/assets/sign-in-11-235.css');
 
     // Minimal interaction from assets/sign-in-11-235.js
     const btn = document.getElementById('big-button-54-668');
-    const onAction = (e) => {
-      // Keep behavior in sync with the original asset JS
+    const onAction = () => {
       // eslint-disable-next-line no-console
       console.log('Sign In clicked');
     };
+    const keyHandler = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onAction();
+      }
+    };
+
     if (btn) {
       btn.addEventListener('click', onAction);
-      const keyHandler = (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onAction(e);
-        }
-      };
       btn.addEventListener('keydown', keyHandler);
-
-      return () => {
-        // Cleanup listeners
-        btn.removeEventListener('click', onAction);
-        btn.removeEventListener('keydown', keyHandler);
-        // Do not remove styles to avoid flicker when navigating; keep the links persistent
-        // document.head.removeChild(commonLink); document.head.removeChild(screenLink);
-      };
     }
 
+    // Cleanup listeners on unmount
     return () => {
-      // Keep styles attached for app-wide reuse and consistency
+      if (btn) {
+        btn.removeEventListener('click', onAction);
+        btn.removeEventListener('keydown', keyHandler);
+      }
     };
   }, []);
 
