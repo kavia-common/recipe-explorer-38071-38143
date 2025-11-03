@@ -40,11 +40,18 @@ echo "[ci-start] Starting dev server on ${HOST}:${PORT} with NODE_OPTIONS=${NODE
 ( npx react-scripts start & ) >/dev/null 2>&1 &
 SERVER_PID=$!
 
+# Ensure wait-on is available (install locally if not present)
+if ! npx --yes wait-on --help >/dev/null 2>&1; then
+  echo "[ci-start] Installing wait-on for readiness checks..."
+  npm install --no-audit --no-fund --silent wait-on || true
+fi
+
 # Wait for health endpoint to be ready
 echo "[ci-start] Waiting for health endpoint..."
 npx --yes wait-on "http://127.0.0.1:${PORT}/healthz.html" --timeout 60000 || true
 
 # Print a simple ready line; keep the background server running for CI to detect port
-echo "[ci-start] Dev server is up at http://127.0.0.1:${PORT}"
+echo "[ci-start] READY - Dev server is up at http://127.0.0.1:${PORT}"
+echo "[ci-start] Health: http://127.0.0.1:${PORT}/healthz.html"
 # Prevent script exit which would kill background job in some CI; tail to keep process alive
 tail -f /dev/null

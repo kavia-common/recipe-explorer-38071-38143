@@ -26,6 +26,9 @@ Then:
 Alias to start with CI-friendly low-memory defaults.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
+Health page (zero-bundle) for CI:
+- http://localhost:3000/healthz.html
+
 If running in CI or low-memory environments, prefer:
 
 ### `npm run start:safe`
