@@ -16,5 +16,6 @@ If you experience exit code 137 (OOM), try:
 - npm run start:lowmem
 - npm run start:ultralowmem
 - Or run ultra + wait together: `npm run ci:dev`
+- For extreme constraints, start static-only (zero-bundle): `npm run ci:dev:static` or set `CI_STATIC_ONLY=1 npm run ci:start`
 
 Environment sample: see frontend_app/.env.example

@@ -46,7 +46,7 @@ cp -r ../assets/* public/assets/ 2>/dev/null || true
 echo "[ci-start] Starting server on ${HOST}:${PORT} with NODE_OPTIONS=${NODE_OPTIONS}"
 # If CI_STATIC_ONLY=1, serve only public assets to minimize memory (zero-bundle)
 if [ "${CI_STATIC_ONLY:-0}" = "1" ]; then
-  ( node -e "const express=require('express');const app=express();const port=process.env.REACT_APP_PORT||process.env.PORT||3000;app.use(express.static('public'));app.get('/healthz.html',(req,res)=>res.send('<!DOCTYPE html><html><head><meta charset=\\'UTF-8\\'><title>OK</title></head><body>OK</body></html>'));app.listen(port,'0.0.0.0',()=>console.log('Static server at http://0.0.0.0:'+port));" & ) >/dev/null 2>&1 &
+  ( node ./scripts/static-server.js & ) >/dev/null 2>&1 &
   SERVER_PID=$!
   echo "[ci-start] static server started with PID ${SERVER_PID}"
 else
