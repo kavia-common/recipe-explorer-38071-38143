@@ -122,11 +122,11 @@ echo "[ci-start] Health: http://127.0.0.1:${PORT}${HEALTH_PATH} (fallbacks: /hea
 graceful_exit() {
   echo "[ci-start] Caught SIGTERM/SIGINT, exiting gracefully"
   # Try to stop only the started child, avoid killing entire process group
-  if kill -0 "${SERVER_PID}" >/dev/null 2>&1; then
+  if [ -n "${SERVER_PID:-}" ] && kill -0 "${SERVER_PID}" >/dev/null 2>&1; then
     kill "${SERVER_PID}" >/dev/null 2>&1 || true
     # Portable small wait loop instead of a blocking wait that might hang in CI
     SECS=0
-    while kill -0 "${SERVER_PID}" >/dev/null 2>&1 && [ $SECS -lt 8 ]; do
+    while kill -0 "${SERVER_PID}" >/dev/null 2>&1 && [ $SECS -lt 6 ]; do
       sleep 1
       SECS=$((SECS+1))
     done
@@ -152,5 +152,5 @@ while true; do
   sleep 5
 done
 
-# Exit cleanly
-wait "${SERVER_PID}" || true
+# Exit cleanly without propagating failures
+wait "${SERVER_PID}" 2>/dev/null || true

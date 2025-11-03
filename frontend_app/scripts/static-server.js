@@ -72,8 +72,9 @@ function main() {
       // eslint-disable-next-line no-console
       console.log('[static-server] Received signal, shutting down gracefully');
       server.close(() => process.exit(0));
-      // Safety timeout
-      setTimeout(() => process.exit(0), 3000).unref();
+      // Safety timeout (unref to avoid keeping event loop alive)
+      const t = setTimeout(() => process.exit(0), 3000);
+      if (t.unref) t.unref();
     } catch {
       process.exit(0);
     }

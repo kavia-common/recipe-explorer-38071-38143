@@ -11,4 +11,4 @@ You can update the database with:
 Notes:
 - This updates your local caniuse-lite DB used by Browserslist (no code changes).
 - Not required for CI to pass, but reduces deprecation notices during dev.
-- The Webpack Dev Server deprecation warnings (onAfterSetupMiddleware/onBeforeSetupMiddleware) stem from react-scripts@5 and are harmless in CI.
+- The Webpack Dev Server deprecation warnings (onAfterSetupMiddleware/onBeforeSetupMiddleware) stem from react-scripts@5 and are harmless in CI and do not affect readiness/health.
