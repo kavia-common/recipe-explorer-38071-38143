@@ -92,6 +92,8 @@ npm run healthcheck
 Or access the lightweight health page:
 - http://localhost:3000/healthz.html
 
+Health endpoint is served statically via `public/healthz.html`, so it responds without loading the React bundle.
+
 ## Customization
 
 ### Colors

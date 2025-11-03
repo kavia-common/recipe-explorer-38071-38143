@@ -3,11 +3,12 @@ import './App.css';
 import SignIn from './components/SignIn.jsx';
 
 // PUBLIC_INTERFACE
+/**
+ * Root app rendering the Sign In screen by default.
+ * Theme toggle is preserved for preview convenience.
+ * @returns {JSX.Element} Application root component.
+ */
 function App() {
-  /**
-   * Root app rendering the Sign In screen by default.
-   * Theme toggle is preserved for preview convenience.
-   */
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {

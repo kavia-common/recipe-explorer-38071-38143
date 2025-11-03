@@ -31,5 +31,20 @@ else
   exit 1
 fi
 
+# Copy public assets after install (idempotent)
+mkdir -p public/assets || true
+cp -r ../assets/* public/assets/ 2>/dev/null || true
+
 echo "[ci-start] Starting dev server on ${HOST}:${PORT} with NODE_OPTIONS=${NODE_OPTIONS}"
-npx react-scripts start
+# Start server in background and wait for health
+( npx react-scripts start & ) >/dev/null 2>&1 &
+SERVER_PID=$!
+
+# Wait for health endpoint to be ready
+echo "[ci-start] Waiting for health endpoint..."
+npx --yes wait-on "http://127.0.0.1:${PORT}/healthz.html" --timeout 60000 || true
+
+# Print a simple ready line; keep the background server running for CI to detect port
+echo "[ci-start] Dev server is up at http://127.0.0.1:${PORT}"
+# Prevent script exit which would kill background job in some CI; tail to keep process alive
+tail -f /dev/null

@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import '../App.css';
 
+// PUBLIC_INTERFACE
 /**
- * PUBLIC_INTERFACE
  * Render a pixel-accurate Sign In screen adapted from assets/sign-in-11-235.html.
  * Loads shared and screen-specific CSS from /assets and binds minimal interactions
  * equivalent to assets/sign-in-11-235.js (console log on Sign In click/enter/space).
+ * @returns {JSX.Element} The Sign In screen component.
  */
 export default function SignIn() {
   useEffect(() => {
