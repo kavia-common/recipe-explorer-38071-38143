@@ -3,6 +3,7 @@
 Frontend (React) quickstart in CI/containers:
 - cd frontend_app
 - npm ci
+- cp .env.example .env   # inherit safe low-memory defaults to avoid exit 137/OOM
 - npm run start:safe
 - Healthcheck (zero-bundle): http://localhost:3000/healthz.html
 - Programmatic wait: npm run ci:health

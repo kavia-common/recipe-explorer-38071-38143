@@ -53,7 +53,7 @@ function main() {
     res.setHeader('Cache-Control', 'no-store, max-age=0');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    res.json({ status: 'ok' });
+    res.type('application/json').send(JSON.stringify({ status: 'ok' }));
   });
 
   // Default route to index.html so that root path responds even without CRA
