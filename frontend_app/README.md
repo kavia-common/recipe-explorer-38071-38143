@@ -28,6 +28,7 @@ Open http://localhost:3000 to view it in your browser.
 
 Health page (zero-bundle) for CI:
 - http://localhost:3000/healthz.html
+- Or set REACT_APP_HEALTHCHECK_PATH to a custom path
 
 This endpoint is served statically from public/healthz.html so it returns even if the React app bundle hasn't finished loading yet.
 

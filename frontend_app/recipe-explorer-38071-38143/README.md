@@ -14,6 +14,7 @@ If you see Browserslist warnings during dev, you can update the database (not re
 
 Health:
 - Zero-bundle health endpoint: http://localhost:3000/healthz.html
+- Programmatic wait until ready: npm run ci:health
 
 Recommended env for stability in CI/containers (add to .env):
 - BROWSER=none

@@ -9,19 +9,20 @@
   },
   "scripts": {
     "start": "npm run start:safe",
-    "start:ci": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=256 react-scripts start",
-    "start:safe": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=256 react-scripts start",
-    "start:lowmem": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=256 node node_modules/react-scripts/bin/react-scripts.js start",
-    "start:ultralowmem": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=192 node node_modules/react-scripts/bin/react-scripts.js start",
-    "healthcheck": "node -e \"const http=require('http');const port=process.env.REACT_APP_PORT||process.env.PORT||3000;http.get('http://127.0.0.1:'+port+'/healthz.html',res=>{console.log('OK',res.statusCode);process.exit(0)}).on('error',e=>{console.error(String(e));process.exit(1)});\"",
-    "healthcheck:wait": "node -e \"const http=require('http');const port=process.env.REACT_APP_PORT||process.env.PORT||3000;let tries=0;const tick=()=>http.get('http://127.0.0.1:'+port+'/healthz.html',res=>{if(res.statusCode===200){console.log('READY');process.exit(0)}else{setTimeout(tick,500)}}).on('error',()=>{if(++tries<120)setTimeout(tick,500);else process.exit(1)});tick();\"",
-    "build": "cross-env GENERATE_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=256 react-scripts build",
+    "start:ci": "cross-env CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=${REACT_APP_ENABLE_SOURCE_MAPS:-false} WDS_SOCKET_PORT=0 NODE_OPTIONS=${NODE_OPTIONS:---max-old-space-size=256} react-scripts start",
+    "start:safe": "cross-env CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=${REACT_APP_ENABLE_SOURCE_MAPS:-false} WDS_SOCKET_PORT=0 NODE_OPTIONS=${NODE_OPTIONS:---max-old-space-size=256} react-scripts start",
+    "start:lowmem": "cross-env CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=${NODE_OPTIONS:---max-old-space-size=256} node node_modules/react-scripts/bin/react-scripts.js start",
+    "start:ultralowmem": "cross-env CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=${NODE_OPTIONS:---max-old-space-size=192} node node_modules/react-scripts/bin/react-scripts.js start",
+    "healthcheck": "node -e \"const http=require('http');const port=process.env.REACT_APP_PORT||process.env.PORT||3000;http.get('http://127.0.0.1:'+port+(process.env.REACT_APP_HEALTHCHECK_PATH||'/healthz.html'),res=>{console.log('OK',res.statusCode);process.exit(0)}).on('error',e=>{console.error(String(e));process.exit(1)});\"",
+    "healthcheck:wait": "node -e \"const http=require('http');const port=process.env.REACT_APP_PORT||process.env.PORT||3000;const path=(process.env.REACT_APP_HEALTHCHECK_PATH||'/healthz.html');let tries=0;const tick=()=>http.get('http://127.0.0.1:'+port+path,res=>{if(res.statusCode===200){console.log('READY');process.exit(0)}else{setTimeout(tick,500)}}).on('error',()=>{if(++tries<120)setTimeout(tick,500);else process.exit(1)});tick();\"",
+    "ci:health": "npm run healthcheck:wait",
+    "build": "cross-env GENERATE_SOURCEMAP=false NODE_OPTIONS=${NODE_OPTIONS:---max-old-space-size=256} react-scripts build",
     "test": "cross-env CI=true react-scripts test --watchAll=false --passWithNoTests",
     "eject": "react-scripts eject",
     "browserslist:update": "npx --yes update-browserslist-db@latest || true",
     "ci:start": "bash ./scripts/ci-start.sh",
-    "ci:start:ultra": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=192 node node_modules/react-scripts/bin/react-scripts.js start",
-    "postinstall": "mkdir -p public/assets && cp -r ../assets/* public/assets/ 2>/dev/null || true && echo \"postinstall: assets copied\" >/dev/null"
+    "ci:start:ultra": "cross-env CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=${NODE_OPTIONS:---max-old-space-size=192} node node_modules/react-scripts/bin/react-scripts.js start",
+    "postinstall": "mkdir -p public/assets && cp -r ../assets/* public/assets/ 2>/dev/null || true && [ -f public/healthz.html ] || (mkdir -p public && printf '<!DOCTYPE html>\\n<html lang=\\\"en\\\"><head><meta charset=\\\"UTF-8\\\"><title>OK</title></head><body>OK</body></html>' > public/healthz.html) && echo \"postinstall: assets copied\" >/dev/null"
   },
   "eslintConfig": {
     "extends": "react-app"
