@@ -18,6 +18,7 @@ First, install dependencies (required in CI as well):
 
 Copy safe defaults to avoid exit code 137 (OOM):
 - cp .env.example .env
+- Verify memory cap is applied (NODE_OPTIONS=--max-old-space-size=256) and source maps are disabled (REACT_APP_ENABLE_SOURCE_MAPS=false)
 
 Zero-bundle health endpoints (always available):
 - http://localhost:3000/healthz.html
