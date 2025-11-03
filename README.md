@@ -19,6 +19,7 @@ If you experience exit code 137 (OOM), try:
 - Or run ultra + wait together: `npm run ci:dev`
 - For extreme constraints, start static-only (zero-bundle): `npm run ci:dev:static` or set `CI_STATIC_ONLY=1 npm run ci:start`
 - The launcher now handles graceful shutdown and avoids forceful kill patterns in CI logs.
+- If your CI kills long-running processes (SIGINT/SIGTERM), static server will respond on /healthz.html and /healthz allowing readiness checks even without bundling.
 
 Environment sample: see frontend_app/.env.example
 

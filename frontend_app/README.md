@@ -19,6 +19,11 @@ First, install dependencies (required in CI as well):
 Copy safe defaults to avoid exit code 137 (OOM):
 - cp .env.example .env
 
+Zero-bundle health endpoints (always available):
+- http://localhost:3000/healthz.html
+- http://localhost:3000/healthz
+These are served statically from public/ and do not require the React bundle to compile.
+
 Then:
 
 ### `npm start`
