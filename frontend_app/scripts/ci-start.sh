@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
+# Ensure strict bash and POSIX behavior to avoid tokenization glitches like "es: command not found"
 set -euo pipefail
+set -o posix || true
+# Normalize IFS to avoid word-splitting anomalies
+IFS=$' \t\n'
 
 # PUBLIC_INTERFACE
 # ci-start.sh installs dependencies and starts the dev server with CI-friendly,

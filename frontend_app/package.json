@@ -13,6 +13,7 @@
   "scripts": {
     "//": "Default start points to start:safe to keep CI stable and avoid OOM (exit 137). Use start:ultralowmem or ci:serve-static for extreme constraints.",
     "prestart": "node ./scripts/prestart-prepare.js",
+    "prestart:ensure-env": "node -e \"const fs=require('fs');if(!fs.existsSync('.env')&&fs.existsSync('.env.example')){fs.copyFileSync('.env.example','.env');console.log('[prestart] .env created from .env.example');} else { console.log('[prestart] .env present or .env.example missing'); }\"",
     "start": "bash ./scripts/ci-start.sh",
     "start:ci": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none WDS_SOCKET_PORT=0 GENERATE_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=256 node node_modules/react-scripts/bin/react-scripts.js start",
     "start:safe": "cross-env CI=true HOST=0.0.0.0 PORT=3000 CHOKIDAR_USEPOLLING=false BROWSER=none WDS_SOCKET_PORT=0 GENERATE_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=256 node node_modules/react-scripts/bin/react-scripts.js start",

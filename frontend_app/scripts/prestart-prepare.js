@@ -69,6 +69,8 @@ function shallowCopy(src, dst) {
 }
 
 (function main() {
+  // Log a small message so CI can confirm prestart ran
+  try { console.log('[prestart] preparing public assets and health endpoints'); } catch {}
   const publicDir = path.resolve('public');
   const assetsDst = path.join(publicDir, 'assets');
   ensureDir(assetsDst);
