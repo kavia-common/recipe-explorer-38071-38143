@@ -23,7 +23,7 @@ Then:
 
 ### `npm start`
 
-Alias to start with CI-friendly low-memory defaults.  
+Alias to start with CI-friendly low-memory defaults (no source maps, memory capped).
 Open http://localhost:3000 to view it in your browser.
 
 Health page (zero-bundle) for CI:

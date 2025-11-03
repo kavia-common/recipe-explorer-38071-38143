@@ -15,6 +15,7 @@ const express = require('express');
 
 function main() {
   const app = express();
+  // Prefer REACT_APP_PORT to mirror CRA expectations; fallback to PORT then 3000
   const port = process.env.REACT_APP_PORT || process.env.PORT || 3000;
   const host = process.env.HOST || '0.0.0.0';
 
