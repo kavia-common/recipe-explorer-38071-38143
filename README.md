@@ -19,3 +19,5 @@ If you experience exit code 137 (OOM), try:
 - For extreme constraints, start static-only (zero-bundle): `npm run ci:dev:static` or set `CI_STATIC_ONLY=1 npm run ci:start`
 
 Environment sample: see frontend_app/.env.example
+
+Note: For CI runners with tight memory where you saw exit code 137, copy frontend_app/.env.example to frontend_app/.env before starting to inherit safe defaults (no source maps, memory cap, static health endpoint).

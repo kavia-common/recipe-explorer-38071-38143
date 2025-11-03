@@ -46,6 +46,10 @@ Alternatively:
   - `npm run ci:dev:static` (static-only + wait; zero-bundle)
   - Ensure `.env` includes `NODE_OPTIONS=--max-old-space-size=256` and `REACT_APP_ENABLE_SOURCE_MAPS=false`.
 
+Stability notes:
+- `npm start` automatically falls back to the static server if the dev server exits non-zero or via signal.
+- To guarantee zero-bundle in very tight memory, set `CI_STATIC_ONLY=1` before `npm start` or use `npm run ci:dev:static`.
+
 If running in CI or low-memory environments, prefer:
 
 ### `npm run start:safe`

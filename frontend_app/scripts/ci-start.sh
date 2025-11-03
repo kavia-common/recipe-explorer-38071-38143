@@ -92,7 +92,8 @@ fi
 # Wait for health endpoint to be ready (served from public/healthz.html zero-bundle)
 echo "[ci-start] Waiting for health endpoint..."
 HEALTH_PATH="${REACT_APP_HEALTHCHECK_PATH:-/healthz.html}"
-if ! npx --yes wait-on "http://127.0.0.1:${PORT}${HEALTH_PATH}" --timeout 120000; then
+# Allow extra headroom for constrained runners
+if ! npx --yes wait-on "http://127.0.0.1:${PORT}${HEALTH_PATH}" --timeout 180000; then
   echo "[ci-start] WARNING: Health endpoint did not become ready within timeout at ${HEALTH_PATH}." >&2
 fi
 
@@ -106,9 +107,9 @@ graceful_exit() {
   # Try to stop only the started child, avoid killing entire process group
   if kill -0 "${SERVER_PID}" >/dev/null 2>&1; then
     kill "${SERVER_PID}" >/dev/null 2>&1 || true
-    # Portable small wait loop instead of `timeout`
+    # Portable small wait loop instead of a blocking wait that might hang in CI
     SECS=0
-    while kill -0 "${SERVER_PID}" >/dev/null 2>&1 && [ $SECS -lt 5 ]; do
+    while kill -0 "${SERVER_PID}" >/dev/null 2>&1 && [ $SECS -lt 8 ]; do
       sleep 1
       SECS=$((SECS+1))
     done
