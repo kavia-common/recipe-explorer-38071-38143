@@ -4,10 +4,10 @@ This project provides a minimal React template with a clean, modern UI and minim
 
 ## Features
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+- Lightweight: No heavy UI frameworks - uses only vanilla CSS and React
+- Modern UI: Clean, responsive design with KAVIA brand styling
+- Fast: Minimal dependencies for quick loading times
+- Simple: Easy to understand and modify
 
 ## Getting Started
 
@@ -23,8 +23,8 @@ Then:
 
 ### `npm start`
 
-Alias to start with CI-friendly low-memory defaults.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Alias to start with CI-friendly low-memory defaults.  
+Open http://localhost:3000 to view it in your browser.
 
 Health page (zero-bundle) for CI:
 - http://localhost:3000/healthz.html
@@ -37,7 +37,7 @@ CI-friendly defaults:
 - Disables source maps (`GENERATE_SOURCEMAP=false`) to reduce memory usage
 - Avoids opening a browser (`BROWSER=none`)
 - Binds to `0.0.0.0` for container access
-- Sets a conservative memory cap for Node via `--max-old-space-size=256`
+- Caps Node memory via `--max-old-space-size=256`
 - Uses `WDS_SOCKET_PORT=0` to avoid websocket port negotiation issues in containers
 
 If your CI is extremely memory constrained, you can use:
@@ -56,8 +56,7 @@ Runs tests once in CI mode.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Builds the app for production to the `build` folder, disabling source maps by default to keep memory low.
 
 ### Browserslist database
 
@@ -67,12 +66,11 @@ If you see a notice that the Browserslist database is out of date, you can updat
 npm run browserslist:update
 ```
 
-You can also read docs/browserslist.md for more info.
+See docs/browserslist.md for more info.
 
 ## Environment Variables
 
-See `.env.example` for variables you can configure (port, flags, URLs).
-Key ones for stability:
+See `.env.example` for variables you can configure (port, flags, URLs). Key ones for stability:
 - `REACT_APP_ENABLE_SOURCE_MAPS=false`
 - `NODE_OPTIONS=--max-old-space-size=256`
 - `BROWSER=none`
@@ -84,29 +82,28 @@ If your CI runner kills the dev server with exit code 137:
 - Use `npm start` or `npm run start:safe` which cap Node memory and disable source maps.
 - Ensure `REACT_APP_ENABLE_SOURCE_MAPS=false` in your env (or `.env`).
 - Keep `BROWSER=none`, `CHOKIDAR_USEPOLLING=false`, and `WDS_SOCKET_PORT=0` to minimize overhead and avoid websocket port issues in containers.
-- You may also export `NODE_OPTIONS=--max-old-space-size=256` explicitly in your CI job.
+- Export `NODE_OPTIONS=--max-old-space-size=256` explicitly in your CI job if needed.
+- Use the `healthcheck:wait` script to block until the server serves `/healthz.html`.
 
 ## Healthcheck
 
-You can verify the server is up (from the same container) with:
+Verify the server is up (from the same container) with:
 ```
 npm run healthcheck
 ```
 Or access the lightweight health page:
 - http://localhost:3000/healthz.html
 
-Health endpoint is served statically via `public/healthz.html`, so it responds without loading the React bundle.
+The health endpoint is served statically via `public/healthz.html`, so it responds without loading the React bundle.
 
 ## Customization
 
 ### Colors
-
 The main brand colors and tokens are defined as CSS variables in `src/App.css`.
 
 ### Components
-
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
+This template uses pure HTML/CSS components instead of a UI framework. Component styles can be found in `src/App.css`. 
 
 ## Learn More
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+To learn React, check out the React documentation: https://reactjs.org/
