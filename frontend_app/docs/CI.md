@@ -18,3 +18,4 @@ Static-only startup (ultra-low memory):
 
 Environment template:
 - Copy .env.example to .env and commit environment settings required by your CI.
+- In extremely tight environments, consider `CI_STATIC_ONLY=1 npm run ci:start` to serve only static health without building the bundle.

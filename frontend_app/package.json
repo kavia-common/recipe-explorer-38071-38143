@@ -8,7 +8,7 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
-    "//": "Default start points to start:safe to keep CI stable and avoid OOM (exit 137)",
+    "//": "Default start points to start:safe to keep CI stable and avoid OOM (exit 137). Use start:ultralowmem or ci:serve-static for extreme constraints.",
     "prestart": "mkdir -p public/assets && cp -r ../assets/* public/assets/ 2>/dev/null || true && [ -f public/healthz.html ] || (mkdir -p public && printf '<!DOCTYPE html>\\n<html lang=\\\"en\\\"><head><meta charset=\\\"UTF-8\\\"><title>OK</title></head><body>OK</body></html>' > public/healthz.html)",
     "start": "npm run start:safe",
     "start:ci": "cross-env CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=${REACT_APP_ENABLE_SOURCE_MAPS:-false} WDS_SOCKET_PORT=0 NODE_OPTIONS=${NODE_OPTIONS:---max-old-space-size=256} node_modules/.bin/react-scripts start",
