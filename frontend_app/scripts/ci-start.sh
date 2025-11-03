@@ -68,7 +68,7 @@ start_static() {
 
 start_react() {
   # Explicit low-memory flags; disable source maps and UI extras
-  HOST="$HOST" PORT="$PORT" BROWSER="none" CHOKIDAR_USEPOLLING="false" WDS_SOCKET_PORT="0" GENERATE_SOURCEMAP="false" \
+  HOST="$HOST" PORT="$PORT" BROWSER="none" CHOKIDAR_USEPOLLING="false" WDS_SOCKET_PORT="0" GENERATE_SOURCEMAP="${GENERATE_SOURCEMAP:-false}" \
   NODE_OPTIONS="${NODE_OPTIONS:-"--max-old-space-size=256"}" \
   node node_modules/react-scripts/bin/react-scripts.js start >/dev/null 2>&1 &
   echo $!

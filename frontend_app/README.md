@@ -11,27 +11,24 @@ This project provides a minimal React template with a clean, modern UI and minim
 
 ## Getting Started
 
-In the project directory, you can run:
-
 First, install dependencies (required in CI as well):
-
 - npm ci
   or
 - npm install
 
+Copy safe defaults to avoid exit code 137 (OOM):
+- cp .env.example .env
+
 Then:
 
 ### `npm start`
-
-Alias to start with CI-friendly low-memory defaults (no source maps, memory capped).
+Starts with CI-friendly low-memory defaults (no source maps, memory capped).
 Open http://localhost:3000 to view it in your browser.
 
 Health page (zero-bundle) for CI:
 - http://localhost:3000/healthz.html
 - Or set REACT_APP_HEALTHCHECK_PATH to a custom path
 - If webpack dev server cannot start in tight memory, scripts automatically fall back to the static server while still serving this endpoint.
-
-This endpoint is served statically from public/healthz.html so it returns even if the React app bundle hasn't finished loading yet.
 
 If your CI is extremely memory constrained (exit code 137/SIGKILL), you can avoid starting the JS bundle entirely and still pass health checks by running:
 - `CI_STATIC_ONLY=1 npm run ci:start`
@@ -69,33 +66,25 @@ CI-friendly defaults:
 If your CI is extremely memory constrained, you can use:
 
 ### `npm run start:lowmem`
-
-Same as above but enforces the Node memory cap more strictly by invoking `node --max-old-space-size=256`.
+Same as above but explicitly sets Node memory cap.
 
 ### `npm run start:ultralowmem`
-
 For extremely constrained CI (to avoid OOM/Exit 137), this sets an even lower memory cap and disables source maps and websocket port negotiation aggressively.
 
 ### `npm test`
-
 Runs tests once in CI mode.
 
 ### `npm run build`
-
 Builds the app for production to the `build` folder, disabling source maps by default to keep memory low.
 
 ### Browserslist database
-
 If you see a notice that the Browserslist database is out of date, you can update it with:
-
 ```
 npm run browserslist:update
 ```
-
 See docs/browserslist.md for more info.
 
 ## Environment Variables
-
 See `.env.example` for variables you can configure (port, flags, URLs). Key ones for stability:
 - `REACT_APP_ENABLE_SOURCE_MAPS=false`
 - `NODE_OPTIONS=--max-old-space-size=256`
@@ -105,7 +94,6 @@ See `.env.example` for variables you can configure (port, flags, URLs). Key ones
 A ready-to-use `.env.example` is included to avoid OOM on CI.
 
 ## CI Stability Tips (Exit 137/OOM)
-
 If your CI runner kills the dev server with exit code 137:
 - Use `npm start` or `npm run start:safe` which cap Node memory and disable source maps.
 - Ensure `REACT_APP_ENABLE_SOURCE_MAPS=false` in your env (or `.env`).
@@ -117,7 +105,6 @@ If your CI runner kills the dev server with exit code 137:
   - Set `CI_STATIC_ONLY=1` to serve static-only in ultra-tight memory
 
 ## Healthcheck
-
 Verify the server is up (from the same container) with:
 ```
 npm run healthcheck
@@ -136,5 +123,4 @@ The main brand colors and tokens are defined as CSS variables in `src/App.css`.
 This template uses pure HTML/CSS components instead of a UI framework. Component styles can be found in `src/App.css`. 
 
 ## Learn More
-
 To learn React, check out the React documentation: https://reactjs.org/
