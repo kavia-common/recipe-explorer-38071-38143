@@ -23,6 +23,7 @@ Copy safe defaults to avoid exit code 137 (OOM):
 Zero-bundle health endpoints (always available):
 - http://localhost:3000/healthz.html
 - http://localhost:3000/healthz
+- http://localhost:3000/health.json
 These are served statically from public/ and do not require the React bundle to compile.
 
 Then:

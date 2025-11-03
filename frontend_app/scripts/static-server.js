@@ -49,6 +49,12 @@ function main() {
   };
   app.get('/healthz.html', (req, res) => sendHealth(res, true));
   app.get('/healthz', (req, res) => sendHealth(res, false));
+  app.get('/health.json', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.json({ status: 'ok' });
+  });
 
   // Default route to index.html so that root path responds even without CRA
   app.get('/', (req, res) => {

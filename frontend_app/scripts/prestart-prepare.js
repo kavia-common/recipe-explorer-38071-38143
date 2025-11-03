@@ -89,10 +89,15 @@ function shallowCopy(src, dst) {
   );
   // Provide /healthz (no extension) for environments probing this path
   ensureFile(path.join(publicDir, 'healthz'), 'OK');
+  // Also expose a simple JSON health for tooling that expects JSON
+  ensureFile(path.join(publicDir, 'health.json'), JSON.stringify({ status: 'ok' }));
 
   // Index mount point for CRA dev server
   ensureFile(
     path.join(publicDir, 'index.html'),
-    '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Recipe Explorer</title></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>'
+    '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta http-equiv="Cache-Control" content="no-store, max-age=0"/><title>Recipe Explorer</title></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>'
   );
+
+  // Provide a minimal robots.txt to avoid 404 noise in some scanners
+  ensureFile(path.join(publicDir, 'robots.txt'), 'User-agent: *\nDisallow:\n');
 })();

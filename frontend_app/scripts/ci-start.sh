@@ -62,7 +62,8 @@ fi
 echo "[ci-start] Starting server on ${HOST}:${PORT} (mode=${MODE}) with NODE_OPTIONS=${NODE_OPTIONS}"
 
 start_static() {
-  node ./scripts/static-server.js >/dev/null 2>&1 &
+  # Keep logs visible so CI doesn't kill due to perceived inactivity
+  node ./scripts/static-server.js &
   echo $!
 }
 
@@ -70,7 +71,7 @@ start_react() {
   # Explicit low-memory flags; disable source maps and UI extras
   HOST="$HOST" PORT="$PORT" BROWSER="none" CHOKIDAR_USEPOLLING="false" WDS_SOCKET_PORT="0" GENERATE_SOURCEMAP="${GENERATE_SOURCEMAP:-false}" \
   NODE_OPTIONS="${NODE_OPTIONS:-"--max-old-space-size=256"}" \
-  node node_modules/react-scripts/bin/react-scripts.js start >/dev/null 2>&1 &
+  node node_modules/react-scripts/bin/react-scripts.js start &
   echo $!
 }
 
@@ -98,12 +99,14 @@ echo "[ci-start] Waiting for health endpoint..."
 HEALTH_PATH="${REACT_APP_HEALTHCHECK_PATH:-/healthz.html}"
 # Allow extra headroom for constrained runners
 if ! npx --yes wait-on "http://127.0.0.1:${PORT}${HEALTH_PATH}" --timeout 180000; then
-  echo "[ci-start] WARNING: Health endpoint did not become ready within timeout at ${HEALTH_PATH}." >&2
+  echo "[ci-start] WARNING: ${HEALTH_PATH} not ready, trying /healthz and /health.json..." >&2
+  npx --yes wait-on "http://127.0.0.1:${PORT}/healthz" --timeout 60000 || true
+  npx --yes wait-on "http://127.0.0.1:${PORT}/health.json" --timeout 60000 || true
 fi
 
 # Print a simple ready line
 echo "[ci-start] READY - Server listening at http://127.0.0.1:${PORT}"
-echo "[ci-start] Health: http://127.0.0.1:${PORT}${HEALTH_PATH}"
+echo "[ci-start] Health: http://127.0.0.1:${PORT}${HEALTH_PATH} (fallbacks: /healthz, /health.json)"
 
 # Trap signals to avoid kill -9 patterns and exit gracefully
 graceful_exit() {
