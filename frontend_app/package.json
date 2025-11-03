@@ -8,16 +8,17 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
-    "start": "CI=${CI:-false} HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none WDS_SOCKET_PORT=0 GENERATE_SOURCEMAP=${REACT_APP_ENABLE_SOURCE_MAPS:-false} NODE_OPTIONS=${NODE_OPTIONS:-\"--max-old-space-size=256\"} react-scripts start",
-    "start:ci": "CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=${NODE_OPTIONS:-\"--max-old-space-size=256\"} react-scripts start",
+    "start": "cross-env CI=${CI:-false} HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none WDS_SOCKET_PORT=0 GENERATE_SOURCEMAP=${REACT_APP_ENABLE_SOURCE_MAPS:-false} NODE_OPTIONS=${NODE_OPTIONS:-\"--max-old-space-size=256\"} react-scripts start",
+    "start:ci": "cross-env CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=${NODE_OPTIONS:-\"--max-old-space-size=256\"} react-scripts start",
     "start:safe": "npm run start:ci",
-    "start:lowmem": "CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=256 node node_modules/react-scripts/bin/react-scripts.js start",
-    "start:ultralowmem": "CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=192 node node_modules/react-scripts/bin/react-scripts.js start",
-    "build": "GENERATE_SOURCEMAP=${REACT_APP_ENABLE_SOURCE_MAPS:-false} NODE_OPTIONS=${NODE_OPTIONS:-\"--max-old-space-size=256\"} react-scripts build",
-    "test": "CI=true react-scripts test --watchAll=false --passWithNoTests",
+    "start:lowmem": "cross-env CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=256 node node_modules/react-scripts/bin/react-scripts.js start",
+    "start:ultralowmem": "cross-env CI=true HOST=0.0.0.0 PORT=${REACT_APP_PORT:-3000} CHOKIDAR_USEPOLLING=false BROWSER=none GENERATE_SOURCEMAP=false WDS_SOCKET_PORT=0 NODE_OPTIONS=--max-old-space-size=192 node node_modules/react-scripts/bin/react-scripts.js start",
+    "build": "cross-env GENERATE_SOURCEMAP=${REACT_APP_ENABLE_SOURCE_MAPS:-false} NODE_OPTIONS=${NODE_OPTIONS:-\"--max-old-space-size=256\"} react-scripts build",
+    "test": "cross-env CI=true react-scripts test --watchAll=false --passWithNoTests",
     "eject": "react-scripts eject",
     "browserslist:update": "npx --yes update-browserslist-db@latest || true",
-    "ci:start": "bash ./scripts/ci-start.sh"
+    "ci:start": "bash ./scripts/ci-start.sh",
+    "postinstall": "mkdir -p public/assets && cp -r ../assets/* public/assets/ 2>/dev/null || true"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -5,6 +5,13 @@ set -euo pipefail
 # ci-start.sh installs dependencies and starts the dev server with CI-friendly,
 # low-memory defaults to avoid OOM (exit 137) in constrained environments.
 # Usage: ./scripts/ci-start.sh
+# Notes:
+# - Uses NODE_OPTIONS memory cap (default 256 MB). Override via env if needed.
+# - Disables source maps and browser auto-open for stability.
+# - If you still hit 137 in very constrained environments, run:
+#     npm run start:lowmem
+#   or:
+#     npm run start:ultralowmem
 
 export CI=true
 export HOST=0.0.0.0

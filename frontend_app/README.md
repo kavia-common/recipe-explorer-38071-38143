@@ -69,6 +69,11 @@ You can also read docs/browserslist.md for more info.
 ## Environment Variables
 
 See `.env.example` for variables you can configure (port, flags, URLs).
+Key ones for stability:
+- `REACT_APP_ENABLE_SOURCE_MAPS=false`
+- `NODE_OPTIONS=--max-old-space-size=256`
+- `BROWSER=none`
+- `WDS_SOCKET_PORT=0`
 
 ## CI Stability Tips (Exit 137/OOM)
 
