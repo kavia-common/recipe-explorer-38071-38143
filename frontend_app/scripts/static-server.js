@@ -20,6 +20,13 @@ function main() {
   const host = process.env.HOST || '0.0.0.0';
 
   // Serve static files from public/
+  app.use((req, res, next) => {
+    // Ensure no aggressive caching for CI to read fresh health responses
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+  });
   app.use(express.static('public'));
 
   // Health endpoints (zero-bundle)
@@ -36,10 +43,25 @@ function main() {
   app.get('/healthz.html', (req, res) => sendHealth(res, true));
   app.get('/healthz', (req, res) => sendHealth(res, false));
 
-  app.listen(port, host, () => {
+  const server = app.listen(port, host, () => {
     // eslint-disable-next-line no-console
     console.log(`Static server at http://${host}:${port}`);
   });
+
+  // Graceful shutdown to avoid hard kill patterns in CI
+  const shutdown = () => {
+    try {
+      // eslint-disable-next-line no-console
+      console.log('[static-server] Received signal, shutting down gracefully');
+      server.close(() => process.exit(0));
+      // Safety timeout
+      setTimeout(() => process.exit(0), 3000).unref();
+    } catch {
+      process.exit(0);
+    }
+  };
+  process.on('SIGTERM', shutdown);
+  process.on('SIGINT', shutdown);
 }
 
 if (require.main === module) {

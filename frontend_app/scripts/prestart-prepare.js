@@ -4,7 +4,7 @@
  * PUBLIC_INTERFACE
  * Prepare static assets and health/index stubs safely before start/install.
  * - Creates public/assets and copies ../assets if present.
- * - Ensures public/healthz.html exists (zero-bundle health).
+ * - Ensures public/healthz.html and public/healthz exist (zero-bundle health).
  * - Ensures public/index.html exists (CRA mount point).
  * This runs very fast and avoids heavy operations to keep memory low.
  */
@@ -73,6 +73,8 @@ function safeCopy(src, dst) {
     path.join(publicDir, 'healthz.html'),
     '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>OK</title></head><body>OK</body></html>'
   );
+  // Provide /healthz (no extension) for environments probing this path
+  ensureFile(path.join(publicDir, 'healthz'), 'OK');
 
   // Index mount point for CRA dev server
   ensureFile(
