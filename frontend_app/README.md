@@ -38,6 +38,9 @@ or
 - `npm run ci:dev:static`
 Both serve only the public/ folder (including healthz.html) with minimal memory footprint.
 
+Alternatively:
+- `npm run start:static` will serve only the static public directory locally without the React dev server.
+
 If running in CI or low-memory environments, prefer:
 
 ### `npm run start:safe`

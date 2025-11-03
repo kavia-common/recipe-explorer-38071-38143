@@ -1,24 +1,21 @@
 # recipe-explorer-38071-38143
 
-Note: In CI or constrained environments, start the frontend with:
+Frontend (React) quickstart in CI/containers:
 - cd frontend_app
 - npm ci
 - npm run start:safe
+- Healthcheck (zero-bundle): http://localhost:3000/healthz.html
+- Programmatic wait: npm run ci:health
 
-This minimizes memory usage and reduces the chance of exit code 137 (OOM). You can further reduce memory by using:
+CI Low-memory tips:
+- Use npm run start:safe (default) or npm run start:ultralowmem for very tight memory.
+- Ensure NODE_OPTIONS=--max-old-space-size=256 and REACT_APP_ENABLE_SOURCE_MAPS=false.
+- Health endpoint is static and should return even before bundle compiles.
+
+If you experience exit code 137 (OOM), try:
 - npm run start:lowmem
 - npm run start:ultralowmem
+- Or run ultra + wait together: `npm run ci:dev`
+- For extreme constraints, serve only static: `npm run ci:dev:static` or `npm run start:static` (responds on /healthz.html without starting webpack)
 
-If you see Browserslist warnings during dev, you can update the database (not required for CI) with:
-- cd frontend_app && npm run browserslist:update
-
-Health:
-- Zero-bundle health endpoint: http://localhost:3000/healthz.html
-- Programmatic wait until ready: npm run ci:health
-
-Recommended env for stability in CI/containers (add to .env):
-- BROWSER=none
-- CHOKIDAR_USEPOLLING=false
-- WDS_SOCKET_PORT=0
-- NODE_OPTIONS=--max-old-space-size=256
-- REACT_APP_ENABLE_SOURCE_MAPS=false
+Environment sample: see frontend_app/.env.example
