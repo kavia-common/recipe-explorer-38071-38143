@@ -1,1 +1,4 @@
-OK
+OK````
+Explanation: Provide JSON variant for tooling that expects JSON health responses.
+````write file="recipe-explorer-38071-38143/frontend_app/public/health.json"
+{"status":"ok"}
