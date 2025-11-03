@@ -13,6 +13,14 @@ This project provides a minimal React template with a clean, modern UI and minim
 
 In the project directory, you can run:
 
+First, install dependencies (required in CI as well):
+
+- npm ci
+  or
+- npm install
+
+Then:
+
 ### `npm start`
 
 Runs the app in development mode.\
@@ -61,6 +69,14 @@ You can also read docs/browserslist.md for more info.
 ## Environment Variables
 
 See `.env.example` for variables you can configure (port, flags, URLs).
+
+## CI Stability Tips (Exit 137/OOM)
+
+If your CI runner kills the dev server with exit code 137:
+- Prefer `npm run start:ci` or `npm run start:lowmem` which cap Node memory and disable source maps.
+- Ensure `REACT_APP_ENABLE_SOURCE_MAPS=false` in your env (or `.env`).
+- Keep `BROWSER=none`, `CHOKIDAR_USEPOLLING=false`, and `WDS_SOCKET_PORT=0` to minimize overhead and avoid websocket port issues in containers.
+- You may also export `NODE_OPTIONS=--max-old-space-size=256` explicitly in your CI job.
 
 ## Customization
 
