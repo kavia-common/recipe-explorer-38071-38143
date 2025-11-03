@@ -15,6 +15,8 @@ Static-only startup (ultra-low memory):
 - Set CI_STATIC_ONLY=1 and run: npm run ci:start
   - This serves only the public/ directory (including healthz.html) without starting the React dev server bundle.
   - Useful for pipelines that only need a responsive port/health without building the JS bundle.
+- When starting with `npm start` or `npm run ci:dev`, if the dev server exits early (e.g., OOM), a fallback to the static server is triggered automatically to keep the health endpoint available.
+- A ready-to-use `.env.example` is included and should be copied to `.env` for stable memory settings.
 
 Environment template:
 - Copy .env.example to .env and commit environment settings required by your CI.
