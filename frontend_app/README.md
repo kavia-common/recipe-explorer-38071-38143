@@ -22,7 +22,17 @@ If running in CI or low-memory environments, prefer:
 
 ### `npm run start:ci`
 
-Starts the dev server without opening a browser and with CI-friendly defaults.
+Starts the dev server with CI-friendly defaults:
+- Disables source maps (`GENERATE_SOURCEMAP=false`) to reduce memory usage
+- Avoids opening a browser (`BROWSER=none`)
+- Binds to `0.0.0.0` for container access
+- Sets a conservative memory cap for Node via `--max_old_space_size=256`
+
+If your CI is extremely memory constrained, you can use:
+
+### `npm run start:lowmem`
+
+Same as above but enforces the Node memory cap more strictly by invoking `node --max-old-space-size=256`.
 
 ### `npm test`
 
@@ -32,6 +42,18 @@ Runs tests once in CI mode.
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
+
+### Browserslist database
+
+If you see a notice that the Browserslist database is out of date, you can update it with:
+
+```
+npm run browserslist:update
+```
+
+## Environment Variables
+
+See `.env.example` for variables you can configure (port, flags, URLs).
 
 ## Customization
 
